@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07101e">
+  <meta name="description" content="NODO v4: solitario di associazioni di parole e costellazioni da incastrare.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2307101e'/%3E%3Cpath d='M13 45L27 19L48 39' stroke='%23e9c786' stroke-width='3' fill='none'/%3E%3Cg fill='%23eef7ff'%3E%3Ccircle cx='13' cy='45' r='4'/%3E%3Ccircle cx='27' cy='19' r='4'/%3E%3Ccircle cx='48' cy='39' r='4'/%3E%3C/g%3E%3C/svg%3E">
+  <title>NODO v4 · Solitario</title>
+  <style>:root{color-scheme:dark;--bg:#07101e;--panel:#0d1a2d;--panel2:#12233a;--line:#263a55;--ink:#eef5fb;--muted:#9eb0c5;--gold:#e9c786;--live:#ffd589;--done:#77e0bf;--dead:#718096;font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif}*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;min-height:100vh;color:var(--ink);background:radial-gradient(circle at 50% -10%,#223e61 0,transparent 42%),var(--bg)}body:before{content:"";position:fixed;inset:0;z-index:-1;opacity:.28;background-image:radial-gradient(1px 1px at 30px 50px,#fff 50%,transparent),radial-gradient(1px 1px at 130px 90px,#8eb5d9 50%,transparent);background-size:217px 181px,331px 277px}button,input,select{font:inherit}button{border:1px solid var(--line);border-radius:10px;background:#13243a;color:var(--ink);padding:.7rem .9rem;cursor:pointer}button:hover{border-color:#7893b2;background:#1c304a}button:disabled{opacity:.38;cursor:not-allowed}.primary{background:var(--ink);border-color:var(--ink);color:#101927;font-weight:750}.primary:hover{background:white}.danger{color:#ffb1aa}.header{height:70px;padding:0 clamp(1rem,3vw,2rem);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#081221dd;backdrop-filter:blur(12px);position:relative;z-index:5}.header nav{display:flex;gap:.45rem}.brand{display:flex;align-items:center;gap:.7rem}.brand>span{font-size:2rem;color:var(--gold)}.brand strong{font-family:Georgia,serif;font-size:1.35rem;letter-spacing:.34rem}.brand small{display:block;margin-top:.15rem;color:var(--muted);font-size:.6rem;letter-spacing:.22rem}.eyebrow{text-transform:uppercase;letter-spacing:.2rem;font-size:.65rem;color:var(--gold);font-weight:750}h1,h2{font-family:Georgia,serif;font-weight:400}h1{font-size:clamp(3rem,7vw,6.4rem);letter-spacing:-.05em;line-height:.92;margin:.8rem 0 1.2rem}h2{margin:.45rem 0 .65rem}i{color:var(--gold)}p{line-height:1.55;color:var(--muted)}.welcome{max-width:1180px;margin:auto;padding:clamp(2rem,6vw,5rem) 1.2rem;display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(2rem,6vw,5rem);align-items:center}.intro>p{max-width:580px}.hero-sky{height:220px;position:relative;margin-top:1.2rem;background:radial-gradient(ellipse,#21405c88,transparent 65%)}.hero-sky:before{content:"";position:absolute;left:10%;top:55%;width:70%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:rotate(-12deg)}.hero-sky span{position:absolute;padding:.25rem .5rem;border-radius:1rem;background:#0c192bcc;color:#dceaff;font-family:Georgia,serif;font-style:italic}.hero-sky span:before{content:"";display:inline-block;width:.45rem;height:.45rem;border-radius:50%;background:var(--gold);margin-right:.4rem;box-shadow:0 0 14px var(--gold)}.hero-sky span:nth-child(1){left:5%;top:58%}.hero-sky span:nth-child(2){left:34%;top:28%}.hero-sky span:nth-child(3){left:62%;top:49%}.hero-sky span:nth-child(4){right:1%;top:16%}.setup,.panel{background:linear-gradient(145deg,#13253ddb,#0b1729ee);border:1px solid var(--line);border-radius:18px;padding:1.4rem;box-shadow:0 24px 70px #0004}.setup label,.word-dialog label{display:block;color:#c8d4e1;font-size:.85rem;margin-top:1.1rem}.setup input,.setup select,.word-dialog input{display:block;width:100%;margin-top:.45rem;padding:.85rem;border-radius:10px;border:1px solid #38506d;background:#081321;color:var(--ink);font-size:1rem}.setup .primary,.setup #resume{width:100%;margin-top:1.1rem}.note{font-size:.75rem}.game{max-width:1680px;margin:auto;padding:1rem;display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:1rem}.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:.55rem;margin-bottom:.7rem}.stat{padding:.65rem .8rem;border:1px solid var(--line);border-radius:11px;background:#0d1a2ddd}.stat small{display:block;color:var(--muted);font-size:.66rem}.stat b{display:block;margin-top:.15rem;font-family:Georgia,serif;font-size:1.35rem;font-weight:400}.board-shell{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:radial-gradient(ellipse,#172e4b88,transparent 68%),#07111f}.board-head{min-height:66px;padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:.8rem;border-bottom:1px solid var(--line)}.board-head p{font-size:.75rem;margin:.2rem 0 0}.zoom{display:flex;gap:.35rem}.board-scroll{height:min(55vh,570px);min-height:370px;overflow:auto;touch-action:pan-x pan-y}.board-scroll svg{display:block}.legend{padding:.55rem 1rem;display:flex;gap:1.1rem;border-top:1px solid var(--line);color:var(--muted);font-size:.7rem}.legend b{width:.58rem;height:.58rem;display:inline-block;border-radius:50%;margin-right:.25rem}.live-dot{background:var(--live)}.done-dot{background:var(--done)}.dead-dot{background:var(--dead)}.cards-head{display:flex;align-items:end;justify-content:space-between;margin:1rem 0 .6rem}.cards-head h2{font-size:1.2rem;margin:.2rem 0 0}.cards-head span{font-size:.72rem;color:var(--muted)}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem}.card{min-width:0;padding:.75rem;border:1px solid #435b79;border-radius:14px;background:linear-gradient(145deg,#142943,#0a1628);position:relative;overflow:hidden}.card.match{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 0 26px #e9c7862b}.card-top{display:flex;justify-content:space-between;color:var(--gold);font-size:.68rem;letter-spacing:.08rem}.diagram{display:block;width:100%;height:76px}.card h3{font-family:Georgia,serif;font-weight:400;font-size:1rem;margin:.1rem 0}.card p{font-size:.69rem;line-height:1.35;margin:.25rem 0;min-height:1.9rem}.card button{width:100%;padding:.48rem;margin-top:.4rem;font-size:.72rem}.panel{padding:1rem;margin-bottom:.75rem}.panel h2{font-size:1.35rem}.panel p{font-size:.82rem}.panel button{width:100%;margin-top:.45rem}.source-box,.match-box{border:1px solid #526b89;border-radius:11px;padding:.75rem;margin:.75rem 0;background:#081522}.match-box{border-color:#9b814f;background:#3f331b3b}.match-box strong{color:var(--gold)}.journal{max-height:300px;overflow:auto}.journal ol{padding-left:1.15rem;margin-bottom:0;color:var(--muted);font-size:.74rem}.journal li{margin-bottom:.45rem}aside>#export{width:100%}footer{text-align:center;padding:1.5rem;color:#6f8299;font-size:.65rem;letter-spacing:.1rem}dialog{max-width:min(92vw,650px);border:1px solid #506784;border-radius:18px;background:#0d1a2d;color:var(--ink);padding:1.4rem;box-shadow:0 30px 100px #000a}dialog::backdrop{background:#020711c9;backdrop-filter:blur(5px)}dialog p,dialog li{color:var(--muted);line-height:1.5}.word-dialog{width:min(92vw,440px)}.word-dialog h2{font-size:1.35rem}.dialog-actions{display:grid;grid-template-columns:1fr 1.4fr;gap:.55rem;margin-top:1rem}.lemma-choice{display:block;width:100%;margin:.45rem 0;text-align:left}.atlas-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;max-height:58vh;overflow:auto;margin:1rem 0}.rule{padding:.65rem 0;border-bottom:1px solid var(--line)}.rule strong{color:var(--ink)}.toast{position:fixed;z-index:30;left:50%;bottom:1rem;transform:translateX(-50%);width:min(90vw,520px);padding:.85rem 1rem;border:1px solid #7a8fab;border-radius:12px;background:#13243af2;text-align:center;box-shadow:0 15px 50px #0008}.node-label{fill:#f3f7fb;font-size:12px;paint-order:stroke;stroke:#07101e;stroke-width:4px}.cell{cursor:pointer}.cell:focus-visible circle:first-child{stroke:#fff;stroke-width:2}.result{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:1rem 0}.result div{padding:.7rem;border:1px solid var(--line);border-radius:10px;text-align:center;font-size:.7rem;color:var(--muted)}.result b{display:block;font-size:1.5rem;color:var(--gold)}.stars{font-size:1.45rem;color:var(--gold);letter-spacing:.05rem}.progress-bar{height:7px;border-radius:9px;background:#192a40;overflow:hidden;margin:.6rem 0}.progress-bar span{display:block;height:100%;background:linear-gradient(90deg,#62d3b0,var(--gold))}
+@media(max-width:900px){.welcome{grid-template-columns:1fr}.intro{display:none}.game{grid-template-columns:1fr}.game aside{grid-row:1}.journal,#save,aside>#export{display:none}.stats{grid-template-columns:repeat(5,minmax(0,1fr))}.stat{padding:.5rem}.stat b{font-size:1.1rem}.stat small{font-size:.58rem}.panel{padding:.75rem}.panel p{margin:.4rem 0}.board-scroll{height:48vh;min-height:330px}.cards{grid-template-columns:repeat(3,minmax(145px,1fr));overflow-x:auto;padding-bottom:.35rem}.card{min-width:145px}.header{height:60px}.header button{padding:.55rem}.brand small{display:none}.game{padding:.65rem}.diagram{height:64px}}
+@media(max-width:520px){.stats{gap:.3rem}.stat:nth-child(4){display:none}.stats{grid-template-columns:repeat(4,1fr)}.board-head{padding:.55rem .7rem}.board-head .eyebrow{display:none}.zoom button{padding:.48rem .58rem}.board-scroll{height:46vh;min-height:300px}.legend{padding:.45rem .7rem}.cards-head{margin:.7rem 0 .4rem}.card p{display:none}.card{padding:.6rem}.dialog-actions{grid-template-columns:1fr 1.2fr}.header nav button:nth-child(2){display:none}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="brand"><span>✧</span><div><strong>NODO</strong><small>SOLITARIO V4</small></div></div>
+  <nav><button id="rules">Regole</button><button id="atlas">Atlante</button><button id="restart" hidden>Nuova</button></nav>
+</header>
+
+<main id="welcome" class="welcome">
+  <section class="intro">
+    <div class="eyebrow">Associazioni nello spazio</div>
+    <h1>Disegna il tuo<br><i>cielo di parole.</i></h1>
+    <p>Parti da una parola casuale, costruisci liberamente sul reticolo e riconosci una delle tre configurazioni disponibili. Ogni costellazione chiusa resta distinta dalle altre.</p>
+    <div class="hero-sky" aria-hidden="true"><span>mare</span><span>onda</span><span>viaggio</span><span>orizzonte</span></div>
+  </section>
+  <form id="setup" class="setup">
+    <div class="eyebrow">Una sfida, 61 nodi</div>
+    <h2>Apri la volta celeste</h2>
+    <p>15 carte possono coprire perfettamente il reticolo. Hai sempre tre obiettivi visibili e tre cambi.</p>
+    <label>Modalità<select id="kind"><option value="random">Esplorazione libera</option><option value="code">Sfida con codice</option></select></label>
+    <label id="codeLabel" hidden>Codice<input id="code" maxlength="32" placeholder="es. PRIMO-CIELO" pattern="[A-Za-z0-9-]{1,32}"></label>
+    <button class="primary">Inizia</button><button id="resume" type="button" hidden>Riprendi la partita</button>
+    <p id="best" class="note"></p>
+  </form>
+</main>
+
+<main id="game" class="game" hidden>
+  <section class="play">
+    <div id="stats" class="stats"></div>
+    <div class="board-shell">
+      <div class="board-head">
+        <div><div class="eyebrow">Reticolo</div><p id="progress"></p></div>
+        <div class="zoom"><button id="minus" aria-label="Riduci">−</button><button id="center">Centra</button><button id="plus" aria-label="Ingrandisci">+</button></div>
+      </div>
+      <div id="scroll" class="board-scroll"><svg id="board" role="group" aria-label="Reticolo interattivo"></svg></div>
+      <div class="legend"><span><b class="live-dot"></b> attiva</span><span><b class="done-dot"></b> chiusa</span><span><b class="dead-dot"></b> abortita</span></div>
+    </div>
+    <div class="cards-head"><div><div class="eyebrow">Tre possibilità</div><h2>Carte configurazione</h2></div><span id="deck"></span></div>
+    <div id="cards" class="cards"></div>
+  </section>
+  <aside>
+    <section id="action" class="panel" aria-live="polite"></section>
+    <section class="panel journal"><div class="eyebrow">Diario</div><ol id="log"></ol></section>
+    <button id="export">Esporta resoconto</button><p id="save" class="note"></p>
+  </aside>
+</main>
+
+<footer>NODO v4 · Dizionario italiano locale Morph-it! · modalità libera</footer>
+<dialog id="dialog"></dialog>
+<dialog id="wordDialog" class="word-dialog">
+  <form id="wordForm" method="dialog">
+    <div class="eyebrow">Nuova associazione</div>
+    <h2 id="wordTitle"></h2>
+    <p id="wordHint">Inserisci una singola parola italiana.</p>
+    <label>Parola<input id="word" maxlength="32" autocomplete="off" autocapitalize="none" spellcheck="true" required></label>
+    <div id="wordChoices" hidden></div>
+    <div class="dialog-actions"><button id="cancelWord" type="button">Annulla</button><button id="addWord" class="primary">Aggiungi</button></div>
+  </form>
+</dialog>
+<div id="toast" class="toast" hidden role="status"></div>
+<script>(function(root){
+'use strict';
+const DIRS=[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]];
+const SEEDS=['mare','viaggio','memoria','luce','soglia','tempo','marea','radice','vento','casa','orizzonte','sogno','notte','voce','ritorno','segreto','fuoco','attesa','bosco','isola','stella','ponte','respiro','strada'];
+const SHAPES=[
+ ['Gemelle',2,2,[[0,0],[1,0]],'Due parole direttamente collegate.'],['Triangolo',3,4,[[0,0],[1,0],[0,1]],'Tre nodi raccolti in una figura compatta.'],['Rotta',3,3,[[0,0],[1,0],[2,0]],'Tre parole allineate.'],['Vela',3,4,[[0,0],[1,0],[0,-1]],'Due connessioni formano un angolo.'],['Saetta',4,6,[[0,0],[1,0],[1,-1],[2,-1]],'Un percorso spezzato in due direzioni.'],['Arco',4,5,[[0,0],[1,0],[2,0],[2,-1]],'Tre nodi in linea e una svolta finale.'],['Rombo',4,7,[[0,0],[1,0],[0,1],[1,1]],'Quattro parole in una figura compatta.'],['Corona',4,6,[[0,0],[1,0],[0,1],[-1,1]],'Tre rami raccolti intorno a un vertice.'],['Aquilone',5,9,[[0,0],[1,0],[2,0],[1,-1],[1,1]],'Un asse centrale con due ali opposte.'],['Falce',5,8,[[0,0],[1,0],[2,0],[2,-1],[2,-2]],'Due segmenti formano un angolo ampio.'],['Serpente',5,8,[[0,0],[1,0],[1,-1],[2,-1],[2,-2]],'Una catena che cambia direzione due volte.'],['Altare',5,9,[[0,0],[1,0],[2,0],[0,-1],[2,-1]],'Una base con due estremità rialzate.'],['Orione',6,11,[[0,0],[1,0],[2,0],[0,-1],[1,-1],[2,-1]],'Due file parallele di tre parole.'],['Cigno',6,10,[[0,0],[1,0],[2,0],[3,0],[1,-1],[1,1]],'Una lunga rotta attraversata da due ali.'],['Scorpione',6,10,[[0,0],[1,0],[2,0],[2,-1],[2,-2],[3,-2]],'Una coda angolare con l’ultimo nodo avanzato.'],['Bilancia',6,11,[[0,0],[1,0],[2,0],[0,-1],[2,-1],[1,1]],'Una traversa con tre punti di equilibrio.']
+].map((v,id)=>({id,name:v[0],size:v[1],points:v[2],cells:v[3],description:v[4]}));
+// Exact-cover verificato: insieme, le 15 carte possono occupare tutti i 61 nodi.
+const PERFECT_DECK=[0,0,1,2,3,4,5,6,7,8,9,10,11,12,13];
+function grid(radius=4){let out=[];for(let q=-radius;q<=radius;q++)for(let r=-radius;r<=radius;r++)if(Math.abs(q+r)<=radius)out.push(`${q},${r}`);return out;}
+function parse(id){return id.split(',').map(Number);}function key(q,r){return `${q},${r}`;}
+function adjacent(id){let [q,r]=parse(id);return DIRS.map(([a,b])=>key(q+a,r+b));}
+function rotateCell(cell,times=1){let [q,r]=cell;for(let i=0;i<((times%6)+6)%6;i++)[q,r]=[-r,q+r];return [q,r];}
+function reflectCell([q,r]){return [-q-r,r];}function transformCell(cell,rotation=0,reflected=false){return rotateCell(reflected?reflectCell(cell):cell,rotation);}
+function shapeEdges(shape){
+ // Il Rombo condivide il contorno geometrico della Saetta sul reticolo
+ // esagonale, ma ha una rete a tre rami: i collegamenti lo rendono distinto.
+ if(shape.id===6)return [[0,1],[1,2],[1,3]];
+ let ids=shape.cells.map(([q,r])=>key(q,r)),out=[];for(let i=1;i<ids.length;i++){let parent=-1;for(let j=i-1;j>=0;j--)if(adjacent(ids[j]).includes(ids[i])){parent=j;break;}if(parent<0)throw Error('Figura non connessa: '+shape.name);out.push([parent,i]);}return out;
+}
+function rng(seed){let h=2166136261;for(let c of seed)h=Math.imul(h^c.charCodeAt(0),16777619);return ()=>{h+=0x6D2B79F5;let t=h;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return ((t^t>>>14)>>>0)/4294967296;};}
+function shuffle(a,random){a=a.slice();for(let i=a.length-1;i>0;i--){let j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function clean(s){return String(s||'').normalize('NFC').trim();}function shapeOf(card){return SHAPES[card.shapeId];}function makeCard(shapeId,n){return {uid:`C${n}-${shapeId}`,shapeId};}
+function create(code){code=clean(code).toUpperCase();if(!/^[A-Z0-9-]{1,32}$/.test(code))throw Error('Codice: usa da 1 a 32 lettere, numeri o trattini.');let random=rng('nodo-solo-v4.2:'+code),deck=shuffle(PERFECT_DECK.map((shapeId,i)=>makeCard(shapeId,i)),random),seeds=shuffle(SEEDS,random);let s={version:'solo-4.2',code,cells:grid(),constellations:[],aborted:[],active:null,deck,hand:[],seedDeck:seeds,seedIndex:0,changesLeft:3,cardPoints:0,ended:false,log:['Il cielo è vuoto. Tocca un nodo per iniziare.']};while(s.hand.length<3&&s.deck.length)s.hand.push(s.deck.shift());return s;}
+function occupiedSet(s,includeActive=true){let set=new Set();for(let c of s.constellations)for(let id of c.cells)set.add(id);for(let a of s.aborted)for(let id of a.cells)set.add(id);if(includeActive&&s.active)for(let id of Object.keys(s.active.nodes))set.add(id);return set;}
+function isFree(s,id){return s.cells.includes(id)&&!occupiedSet(s).has(id);}function nextSeed(s){let word=s.seedDeck[s.seedIndex%s.seedDeck.length];s.seedIndex++;return word;}
+function begin(s,id){if(s.ended)throw Error('La sfida è conclusa.');if(s.active)throw Error('È già attiva una costellazione.');if(!isFree(s,id))throw Error('Scegli un nodo libero.');let word=nextSeed(s);s.active={nodes:{[id]:{id,word,lemma:word,pos:'SEED',parent:null}},order:[id]};s.log.push(`✧ Nuova costellazione da «${word}».`);return id;}
+function activeTargets(s,source){if(!s.active?.nodes[source])return [];return adjacent(source).filter(id=>isFree(s,id));}
+function usedLemmas(s){let out=[];for(let c of s.constellations)for(let n of Object.values(c.nodes))out.push(n.lemma);for(let a of s.aborted)for(let n of Object.values(a.nodes))out.push(n.lemma);if(s.active)for(let n of Object.values(s.active.nodes))out.push(n.lemma);return out.filter(Boolean).map(x=>String(x).toLocaleLowerCase('it'));}
+function addWord(s,source,target,word,lemma,pos=''){if(s.ended)throw Error('La sfida è conclusa.');if(!s.active)throw Error('Inizia prima una costellazione.');word=clean(word);lemma=clean(lemma||word).toLocaleLowerCase('it');if(!activeTargets(s,source).includes(target))throw Error('Scegli un nodo libero adiacente alla parola selezionata.');if(!word||word.length>32||/\s/.test(word))throw Error('Inserisci una sola parola, da 1 a 32 caratteri.');if(usedLemmas(s).includes(lemma))throw Error(`Il lemma «${lemma}» è già stato usato.`);s.active.nodes[target]={id:target,word,lemma,pos,parent:source};s.active.order.push(target);s.log.push(`${s.active.nodes[source].word} → ${word}`);return compatibleSlots(s);}
+function normalizedSignature(points,edges,rotation,reflected){let moved=points.map(p=>transformCell(p,rotation,reflected)),minQ=Math.min(...moved.map(p=>p[0])),minR=Math.min(...moved.map(p=>p[1])),norm=moved.map(([q,r])=>[q-minQ,r-minR]),nodes=norm.map(([q,r])=>key(q,r)).sort(),links=edges.map(([a,b])=>{let x=key(...norm[a]),y=key(...norm[b]);return x<y?`${x}>${y}`:`${y}>${x}`;}).sort();return nodes.join(';')+'|'+links.join(';');}
+function canonicalSignature(points,edges){let all=[];for(let f of [false,true])for(let r=0;r<6;r++)all.push(normalizedSignature(points,edges,r,f));return all.sort()[0];}
+function cardSignature(card){let shape=shapeOf(card);return canonicalSignature(shape.cells,shapeEdges(shape));}
+function activeSignature(s){if(!s.active)return '';let ids=Object.keys(s.active.nodes),index=new Map(ids.map((id,i)=>[id,i])),points=ids.map(parse),edges=[];for(let id of ids){let p=s.active.nodes[id].parent;if(p)edges.push([index.get(p),index.get(id)]);}return canonicalSignature(points,edges);}
+function compatibleSlots(s){if(!s.active)return [];let sig=activeSignature(s);return s.hand.map((card,i)=>cardSignature(card)===sig?i:-1).filter(i=>i>=0);}
+function closeConstellation(s,slot){if(!s.active)throw Error('Non c’è una costellazione attiva.');if(!compatibleSlots(s).includes(slot))throw Error('La rete non corrisponde esattamente a questa carta.');let card=s.hand[slot],shape=shapeOf(card),index=s.constellations.length,a=s.active;s.constellations.push({uid:card.uid,shapeId:card.shapeId,cells:Object.keys(a.nodes),nodes:a.nodes,points:shape.points,color:index});s.cardPoints+=shape.points;s.log.push(`✦ ${shape.name} chiusa: +${shape.points} punti.`);s.active=null;s.hand.splice(slot,1);if(s.deck.length)s.hand.push(s.deck.shift());evaluateEnd(s);return shape.points;}
+function abort(s){if(!s.active)throw Error('Non c’è una costellazione da abbandonare.');let a=s.active,cells=Object.keys(a.nodes);s.aborted.push({cells,nodes:a.nodes});s.active=null;s.log.push(`◌ Costellazione abortita: −${cells.length} nodi.`);evaluateEnd(s);return cells.length;}
+function transformedCells(shape,rotation,reflected,anchor){let [aq,ar]=parse(anchor);return shape.cells.map(c=>{let [q,r]=transformCell(c,rotation,reflected);return key(q+aq,r+ar);});}
+function placements(s,card){let shape=shapeOf(card),blocked=occupiedSet(s,false),seen=new Set(),out=[];for(let f of [false,true])for(let r=0;r<6;r++)for(let anchor of s.cells){let cells=transformedCells(shape,r,f,anchor),sig=cells.slice().sort().join(';');if(!seen.has(sig)&&cells.every(id=>s.cells.includes(id)&&!blocked.has(id))){seen.add(sig);out.push({rotation:r,reflected:f,anchor,cells});}}return out;}
+function cardFits(s,card){return !s.active&&placements(s,card).length>0;}function anyFits(s){return !s.active&&s.hand.some(c=>cardFits(s,c));}
+function exchange(s,slot){if(s.ended)throw Error('La sfida è conclusa.');if(s.active)throw Error('Prima chiudi o abbandona la costellazione attiva.');if(s.changesLeft<=0)throw Error('Hai già usato i tre cambi.');if(!s.hand[slot])throw Error('Scegli una carta.');if(!s.deck.length)throw Error('Il mazzo non contiene altre carte.');let old=s.hand[slot];s.hand[slot]=s.deck.shift();s.deck.push(old);s.changesLeft--;s.log.push(`↻ ${shapeOf(old).name} rimessa in fondo al mazzo.`);evaluateEnd(s);return s.hand[slot];}
+function completedNodes(s){return s.constellations.reduce((n,c)=>n+c.cells.length,0);}function abortedNodes(s){return s.aborted.reduce((n,a)=>n+a.cells.length,0);}function activeNodes(s){return s.active?Object.keys(s.active.nodes).length:0;}function freeNodes(s){return s.cells.length-completedNodes(s)-abortedNodes(s)-activeNodes(s);}function coverage(s){return Math.round(completedNodes(s)/s.cells.length*100);}
+function rating(s){let p=coverage(s);if(p===100)return {stars:'★★★★★+',name:'Cielo perfetto'};if(p>=90)return {stars:'★★★★★',name:'Maestro delle costellazioni'};if(p>=75)return {stars:'★★★★',name:'Astronomo'};if(p>=60)return {stars:'★★★',name:'Cartografo celeste'};if(p>=40)return {stars:'★★',name:'Esploratore'};return {stars:'★',name:'Scintilla'};}
+function finalScore(s){return s.cardPoints-freeNodes(s)-abortedNodes(s);}function evaluateEnd(s){if(!s.active&&!s.hand.length&&!s.deck.length){s.ended=true;s.log.push('Il mazzo è esaurito.');}else if(!s.active&&freeNodes(s)===0){s.ended=true;s.log.push('✦ Cielo perfetto: nessun nodo libero.');}}
+function finish(s){if(s.active)throw Error('Prima chiudi o abbandona la costellazione attiva.');s.ended=true;s.log.push(`Partita conclusa: ${s.cardPoints} − ${freeNodes(s)} nodi liberi − ${abortedNodes(s)} nodi abortiti = ${finalScore(s)}.`);}
+root.Solo={DIRS,SEEDS,SHAPES,PERFECT_DECK,grid,parse,key,adjacent,rotateCell,reflectCell,transformCell,shapeEdges,shapeOf,create,occupiedSet,isFree,begin,activeTargets,usedLemmas,addWord,canonicalSignature,cardSignature,activeSignature,compatibleSlots,closeConstellation,abort,transformedCells,placements,cardFits,anyFits,exchange,completedNodes,abortedNodes,activeNodes,freeNodes,coverage,rating,finalScore,finish};
+})(globalThis);
+</script><script>'use strict';
+const $=q=>document.querySelector(q),E=Solo,KEY='nodo-solo-4.2',RK='nodo-solo-records-4.2';
+let S=null,saved=null,records={},source=null,target=null,zoom=1,timer=null,lexicon=new Map(),saveOK=true;
+const COLORS=['#77e0bf','#f0bd70','#a78bef','#73bde8','#ed82a6','#aad77e','#f09f72','#84d4d8'];
+const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function notify(text){let t=$('#toast');t.textContent=text;t.hidden=false;clearTimeout(timer);timer=setTimeout(()=>t.hidden=true,3400);}
+function modal(html){let d=$('#dialog');if(d.open)d.close();d.innerHTML=html;d.showModal();}
+function closeModal(){$('#dialog').close();}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(S));saveOK=true;}catch(e){saveOK=false;}$('#save').textContent=saveOK?'Salvataggio automatico attivo.':'Salvataggio non disponibile.';}
+try{let v=JSON.parse(localStorage.getItem(KEY));if(v?.version==='solo-4.2')saved=v;let r=JSON.parse(localStorage.getItem(RK));if(r&&typeof r==='object')records=r;}catch(e){}
+$('#resume').hidden=!saved;$('#best').textContent=records.overall!==undefined?`Record personale: ${records.overall} punti.`:'Il tuo primo cielo aspetta.';
+$('#kind').onchange=()=>{let coded=$('#kind').value==='code';$('#codeLabel').hidden=!coded;$('#code').required=coded;};
+$('#setup').onsubmit=e=>{e.preventDefault();let code=$('#kind').value==='code'?$('#code').value:'CIELO-'+crypto.getRandomValues(new Uint32Array(1))[0].toString(36).toUpperCase();try{S=E.create(code);enter();}catch(err){notify(err.message);}};
+$('#resume').onclick=()=>{S=saved;enter();if(S.ended)results();};
+function enter(){source=target=null;zoom=1;$('#welcome').hidden=true;$('#game').hidden=false;$('#restart').hidden=false;render();center();}
+function act(fn){try{let out=fn();target=null;if(!S.active)source=null;render();if(S.ended)results();return out;}catch(err){notify(err.message);}}
+function render(){
+ let free=E.freeNodes(S),cover=E.coverage(S),matches=E.compatibleSlots(S);
+ $('#stats').innerHTML=[['Punti',S.cardPoints],['Copertura',cover+'%'],['Liberi',free],['Abortiti',E.abortedNodes(S)],['Cambi',S.changesLeft]].map(([l,v])=>`<div class="stat"><small>${l}</small><b>${v}</b></div>`).join('');
+ $('#progress').textContent=`Sfida ${S.code} · ${S.constellations.length} costellazioni chiuse`;
+ $('#deck').textContent=`${S.deck.length} nel mazzo · ${S.hand.length} in mano`;
+ board();cards();panel(matches);$('#log').innerHTML=S.log.slice().reverse().map(x=>`<li>${esc(x)}</li>`).join('');persist();
+}
+const xy=id=>{let [q,r]=E.parse(id);return [q*100+r*50,r*86.6025];};
+function edge(a,b,color,width=4,dash=''){let [x,y]=xy(a),[u,v]=xy(b);return `<line x1="${x}" y1="${y}" x2="${u}" y2="${v}" stroke="${color}" stroke-width="${width}" ${dash?`stroke-dasharray="${dash}"`:''}/>`;}
+function graphEdges(nodes){let out=[];for(let n of Object.values(nodes))if(n.parent)out.push([n.parent,n.id]);return out;}
+function board(){
+ let svg=$('#board'),width=Math.max(720,$('#scroll').clientWidth),height=width*834/940;svg.setAttribute('viewBox','-470 -417 940 834');svg.style.width=width*zoom+'px';svg.style.height=height*zoom+'px';
+ let out=[],completed=new Map(),aborted=new Map();S.constellations.forEach((c,i)=>c.cells.forEach(id=>completed.set(id,{c,i})));S.aborted.forEach((a,i)=>a.cells.forEach(id=>aborted.set(id,{a,i})));
+ for(let id of S.cells){let [x,y]=xy(id);for(let n of E.adjacent(id))if(S.cells.includes(n)&&id<n){let [u,v]=xy(n);out.push(`<line x1="${x}" y1="${y}" x2="${u}" y2="${v}" stroke="#526b89" opacity=".16"/>`);}}
+ S.constellations.forEach((c,i)=>graphEdges(c.nodes).forEach(([a,b])=>out.push(edge(a,b,COLORS[i%COLORS.length],5))));
+ S.aborted.forEach(a=>graphEdges(a.nodes).forEach(([x,y])=>out.push(edge(x,y,'#667386',4,'4 5'))));
+ if(S.active)graphEdges(S.active.nodes).forEach(([a,b])=>out.push(edge(a,b,'#ffd589',5)));
+ let targets=new Set(source?E.activeTargets(S,source):[]);
+ for(let id of S.cells){
+  let [x,y]=xy(id),done=completed.get(id),dead=aborted.get(id),node=S.active?.nodes[id],possible=targets.has(id),word=node?.word||done?.c.nodes[id]?.word||dead?.a.nodes[id]?.word,color=done?COLORS[done.i%COLORS.length]:dead?'#718096':node?'#ffd589':possible?'#fff0b8':'#536982',r=word?8:possible?7:3;
+  out.push(`<g class="cell" data-id="${id}" transform="translate(${x},${y})" tabindex="${S.ended?-1:0}" role="button" aria-label="${word?esc(word):'Nodo libero'}"><circle r="29" fill="transparent"/>`);
+  if(possible)out.push('<circle r="19" fill="#ffd58918" stroke="#ffd589" stroke-width="2" stroke-dasharray="4 4"/>');
+  if(id===source)out.push('<circle r="23" fill="none" stroke="#fff4cc" stroke-width="2"/>');
+  if(id===target)out.push('<circle r="27" fill="#ffd58918" stroke="#fff" stroke-width="2"/>');
+  if(dead)out.push('<circle r="12" fill="#101824" stroke="#718096" stroke-width="2"/>');
+  out.push(`<circle r="${r}" fill="${color}" style="filter:drop-shadow(0 0 6px ${color})"/>`);
+  if(word)out.push(`<text class="node-label" y="31" text-anchor="middle">${esc(word.length>13?word.slice(0,12)+'…':word)}</text>`);
+  out.push('</g>');
+ }
+ svg.innerHTML=out.join('');
+}
+function selectNode(id){
+ if(S.ended)return;
+ if(!S.active){if(!E.isFree(S,id))return;act(()=>E.begin(S,id));source=id;render();notify(`Parola iniziale: ${S.active.nodes[id].word}`);return;}
+ if(S.active.nodes[id]){source=id;target=null;render();return;}
+ if(source&&E.activeTargets(S,source).includes(id)){target=id;board();openWordDialog();return;}
+ notify('Tocca una parola attiva, poi un nodo libero adiacente.');
+}
+$('#board').onclick=e=>{let n=e.target.closest('[data-id]');if(n)selectNode(n.dataset.id);};
+$('#board').onkeydown=e=>{let n=e.target.closest('[data-id]');if(n&&(e.key==='Enter'||e.key===' ')){e.preventDefault();selectNode(n.dataset.id);}};
+function center(){requestAnimationFrame(()=>{let s=$('#scroll');s.scrollLeft=(s.scrollWidth-s.clientWidth)/2;s.scrollTop=(s.scrollHeight-s.clientHeight)/2;});}
+function centerOn(id){requestAnimationFrame(()=>{let s=$('#scroll'),[x,y]=xy(id),w=parseFloat($('#board').style.width),h=parseFloat($('#board').style.height);s.scrollLeft=(x+470)/940*w-s.clientWidth/2;s.scrollTop=(y+417)/834*h-s.clientHeight/2;});}
+$('#plus').onclick=()=>{zoom=Math.min(2.2,zoom+.2);board();center();};$('#minus').onclick=()=>{zoom=Math.max(.65,zoom-.2);board();center();};$('#center').onclick=()=>{zoom=1;board();center();};
+function normalizedWord(word){return word.normalize('NFC').toLocaleLowerCase('it').trim();}
+function bucket(word){let plain=normalizedWord(word).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');return (plain.slice(0,2)+'__').slice(0,2);}
+async function lookupWord(word){let b=bucket(word);if(!lexicon.has(b)){try{let response=await fetch(`lexicon/${b}.json`);if(!response.ok)throw Error();lexicon.set(b,await response.json());}catch(e){lexicon.set(b,{});}}return lexicon.get(b)[normalizedWord(word)]||[];}
+function openWordDialog(){
+ let d=$('#wordDialog'),from=S.active.nodes[source].word;$('#wordTitle').textContent=`Collega una parola a: ${from}`;$('#wordHint').textContent='Inserisci una singola parola italiana.';$('#word').value='';$('#wordChoices').hidden=true;$('#wordChoices').innerHTML='';$('#addWord').textContent='Aggiungi';$('#addWord').onclick=null;if(!d.open)d.showModal();zoom=Math.max(zoom,1.25);board();centerOn(target);setTimeout(()=>$('#word').focus(),80);
+}
+$('#cancelWord').onclick=()=>{$('#wordDialog').close();target=null;board();};
+$('#wordForm').onsubmit=async e=>{
+ e.preventDefault();let raw=$('#word').value.trim();
+ if(!/^\p{L}+$/u.test(raw)){notify('Inserisci una sola parola, senza articolo, spazi o segni.');return;}
+ $('#addWord').disabled=true;$('#wordHint').textContent='Controllo nel dizionario…';
+ let candidates=await lookupWord(raw);$('#addWord').disabled=false;
+ let unique=[];for(let c of candidates){if(!unique.some(x=>x[0]===c[0]&&x[1]===c[1]))unique.push(c);}
+ if(unique.length===1){commitWord(raw,unique[0][0],unique[0][1]);return;}
+ if(unique.length>1){$('#wordHint').textContent='Questa forma può avere più significati grammaticali. Scegli il lemma:';let box=$('#wordChoices');box.hidden=false;box.innerHTML=unique.slice(0,8).map((c,i)=>`<button type="button" class="lemma-choice" data-choice="${i}"><strong>${esc(c[0])}</strong> · ${esc(c[1]||'parola')}</button>`).join('');box.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>{let c=unique[+b.dataset.choice];commitWord(raw,c[0],c[1]);});return;}
+ $('#wordHint').innerHTML='Parola non trovata. Puoi correggerla oppure confermarla manualmente.';
+ $('#addWord').textContent='Usa comunque';$('#addWord').onclick=ev=>{ev.preventDefault();commitWord(raw,normalizedWord(raw),'MANUALE');};
+};
+function commitWord(word,lemma,pos){let result=act(()=>E.addWord(S,source,target,word,lemma,pos));if(result===undefined)return;$('#wordDialog').close();target=null;let last=S.active?.order.at(-1);source=last||null;render();if(result.length)notify('Configurazione completata: puoi chiuderla o continuare.');}
+function panel(matches){
+ let a=$('#action');
+ if(S.ended){let r=E.rating(S);a.innerHTML=`<div class="eyebrow">Partita conclusa</div><h2>${r.name}</h2><div class="stars">${r.stars}</div><p>Punteggio finale: <strong>${E.finalScore(S)}</strong></p><button id="showResult" class="primary">Vedi risultato</button>`;$('#showResult').onclick=results;return;}
+ if(S.active){let count=E.activeNodes(S),max=Math.max(...S.hand.map(c=>E.shapeOf(c).size));a.innerHTML=`<div class="eyebrow">Costellazione attiva · ${count} nodi</div><h2>${source?esc(S.active.nodes[source]?.word||'Scegli una parola'):'Scegli una parola'}</h2><p>Tocca una parola della rete e poi un nodo libero adiacente.</p>${source?`<div class="source-box">Partenza: <strong>${esc(S.active.nodes[source].word)}</strong><br><small>${E.activeTargets(S,source).length} nodi raggiungibili</small></div>`:''}${count>max?'<p>La rete supera tutte le carte visibili: puoi continuare a esplorare o abortire.</p>':''}`;
+  if(matches.length){a.innerHTML+=`<div class="match-box"><strong>Configurazione completata</strong><p>Scegli se chiuderla adesso oppure continuare a svilupparla.</p>${matches.map(i=>`<button class="primary" data-close="${i}">Chiudi “${esc(E.shapeOf(S.hand[i]).name)}” · +${E.shapeOf(S.hand[i]).points}</button>`).join('')}<button id="continue">Continua a svilupparla</button></div>`;}
+  a.innerHTML+='<button id="abort" class="danger">Abbandona costellazione</button>';
+  a.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>{let pts=act(()=>E.closeConstellation(S,+b.dataset.close));if(pts!==undefined)notify(`Costellazione chiusa: +${pts} punti`);});
+  $('#continue')?.addEventListener('click',()=>notify('Continua scegliendo una parola della rete.'));
+  $('#abort').onclick=()=>modal('<h2>Abbandonare la costellazione?</h2><p>I suoi nodi resteranno spenti e verranno sottratti dal punteggio finale.</p><div class="dialog-actions"><button id="noAbort">Continua</button><button id="yesAbort" class="danger">Abbandona</button></div>');
+  setTimeout(()=>{let no=$('#noAbort'),yes=$('#yesAbort');if(no)no.onclick=closeModal;if(yes)yes.onclick=()=>{closeModal();let n=act(()=>E.abort(S));notify(`${n} nodi spenti.`);};},0);return;
+ }
+ let can=E.anyFits(S);a.innerHTML=`<div class="eyebrow">Nuova costellazione</div><h2>Tocca un nodo libero</h2><p>Il gioco assegnerà la parola iniziale. Poi costruisci liberamente cercando di ottenere una delle tre carte.</p>${!can?'<p class="match-box">Nessuna carta visibile sembra entrare nello spazio rimasto. Usa un cambio o termina.</p>':''}<button id="finish">Termina e calcola</button>`;
+ $('#finish').onclick=()=>modal('<h2>Terminare la partita?</h2><p>Punti carte − nodi liberi − nodi abortiti.</p><div class="dialog-actions"><button id="cancelFinish">Continua</button><button id="confirmFinish" class="primary">Termina</button></div>');
+ setTimeout(()=>{let x=$('#cancelFinish'),y=$('#confirmFinish');if(x)x.onclick=closeModal;if(y)y.onclick=()=>{closeModal();act(()=>E.finish(S));};},0);
+}
+function diagram(shape){let points=shape.cells.map(([q,r])=>[q*42+r*21,r*36.4]),minX=Math.min(...points.map(p=>p[0])),maxX=Math.max(...points.map(p=>p[0])),minY=Math.min(...points.map(p=>p[1])),maxY=Math.max(...points.map(p=>p[1])),n=points.map(([x,y])=>[100+x-(minX+maxX)/2,39+y-(minY+maxY)/2]);return `<svg class="diagram" viewBox="0 0 200 80" aria-hidden="true">${E.shapeEdges(shape).map(([a,b])=>`<line x1="${n[a][0]}" y1="${n[a][1]}" x2="${n[b][0]}" y2="${n[b][1]}" stroke="#e9c786" stroke-width="2"/>`).join('')}${n.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5" fill="#eff7ff"/>`).join('')}</svg>`;}
+function cards(){let matches=new Set(E.compatibleSlots(S));$('#cards').innerHTML=S.hand.map((card,i)=>{let sh=E.shapeOf(card);return `<article class="card ${matches.has(i)?'match':''}"><div class="card-top"><span>${sh.size} NODI</span><span>${sh.points} PT</span></div>${diagram(sh)}<h3>${esc(sh.name)}</h3><p>${esc(sh.description)}</p><button data-change="${i}" ${S.active||!S.changesLeft||!S.deck.length?'disabled':''}>Cambia carta</button></article>`;}).join('')||'<p>Mazzo esaurito.</p>';$('#cards').querySelectorAll('[data-change]').forEach(b=>b.onclick=()=>act(()=>E.exchange(S,+b.dataset.change)));}
+function results(){let total=E.finalScore(S),cover=E.coverage(S),rank=E.rating(S),prev=records[S.code];if(prev===undefined||total>prev){records[S.code]=total;records.overall=Math.max(records.overall??total,total);try{localStorage.setItem(RK,JSON.stringify(records));}catch(e){}}modal(`<div class="eyebrow">Sfida ${esc(S.code)}</div><h2>${rank.name}</h2><div class="stars">${rank.stars}</div><div class="progress-bar"><span style="width:${cover}%"></span></div><p>${cover}% del reticolo ottimizzato</p><div class="result"><div><b>${S.cardPoints}</b>carte</div><div><b>−${E.freeNodes(S)}</b>liberi</div><div><b>−${E.abortedNodes(S)}</b>abortiti</div></div><h2>Totale: ${total}</h2><div class="dialog-actions"><button id="observe">Osserva</button><button id="again" class="primary">Riprova</button></div>`);$('#observe').onclick=closeModal;$('#again').onclick=()=>{let code=S.code;closeModal();S=E.create(code);enter();};}
+function report(){let data={title:'NODO v4 Solitario',version:S.version,code:S.code,points:S.cardPoints,free:E.freeNodes(S),aborted:E.abortedNodes(S),coverage:E.coverage(S),rating:E.rating(S),total:E.finalScore(S),constellations:S.constellations,log:S.log},u=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download=`nodo-v4-${S.code}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(u),800);}
+$('#export').onclick=report;
+$('#restart').onclick=()=>modal('<h2>Nuova sfida?</h2><p>La partita corrente verrà sostituita.</p><div class="dialog-actions"><button id="stay">Resta</button><button id="newGame" class="primary">Nuova</button></div>');
+document.addEventListener('click',e=>{if(e.target.id==='stay')closeModal();if(e.target.id==='newGame'){closeModal();$('#game').hidden=true;$('#welcome').hidden=false;$('#restart').hidden=true;}});
+$('#rules').onclick=()=>{modal(`<div class="eyebrow">Come si gioca</div><h2>Costruisci, riconosci, incastra</h2><div class="rule"><strong>1. Inizia liberamente.</strong> Tocca qualsiasi nodo libero: riceverai una parola casuale.</div><div class="rule"><strong>2. Crea associazioni.</strong> Tocca una parola attiva, poi un nodo adiacente e inserisci una sola parola collegata.</div><div class="rule"><strong>3. Riconosci la forma.</strong> La rete deve coincidere con nodi e collegamenti di una carta. Rotazioni e riflessioni sono valide.</div><div class="rule"><strong>4. Scegli.</strong> Quando completi una carta puoi chiuderla o continuare verso una configurazione più grande.</div><div class="rule"><strong>5. Incastra.</strong> Le costellazioni chiuse possono essere adiacenti, ma non collegate. Tre cambi rimettono la carta in fondo al mazzo.</div><div class="rule"><strong>Punteggio.</strong> Punti delle carte − nodi liberi − nodi abortiti. Solo i nodi chiusi contano nella percentuale.</div><p>Le parole riconosciute sono ricondotte al lemma: lo stesso lemma non può essere ripetuto. Una parola sconosciuta può essere confermata manualmente.</p><button id="closeRules" class="primary">Torna al cielo</button>`);$('#closeRules').onclick=closeModal;};
+$('#atlas').onclick=()=>{modal(`<div class="eyebrow">Forme possibili</div><h2>Atlante</h2><p>Le carte mostrano esattamente nodi e collegamenti; orientamento e riflessione sono liberi.</p><div class="atlas-grid">${E.SHAPES.map(s=>`<article class="card"><div class="card-top"><span>${s.size} NODI</span><span>${s.points} PT</span></div>${diagram(s)}<h3>${esc(s.name)}</h3></article>`).join('')}</div><button id="closeAtlas">Chiudi</button>`);$('#closeAtlas').onclick=closeModal;};
+</script>
+</body></html>
