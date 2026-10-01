@@ -44,6 +44,15 @@
  .dialog-actions button{min-height:44px}
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+.decision-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.4rem;margin:.6rem 0}
+.decision-card{display:flex;min-width:0;flex-direction:column;align-items:center;gap:.1rem;padding:.4rem .2rem;border:1px solid #4a607a;border-radius:10px;background:#101f33;text-align:center}
+.decision-card.ready{border-color:var(--gold);background:#332b1e}
+.decision-card>span{min-height:1.5rem;font-size:.65rem;color:var(--muted)}
+.decision-card.ready>span{color:var(--gold)}
+.decision-card .diagram{height:58px}
+.decision-card strong{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem;color:var(--ink)}
+.decision-card small{font-size:.68rem;color:var(--muted)}
+@media(max-width:600px){.game.choosing{padding-bottom:calc(min(50dvh,400px) + env(safe-area-inset-bottom) + 1rem)}#action.has-match{max-height:min(50dvh,400px)}#action.has-match .decision-cards{gap:.25rem}#action.has-match .decision-card .diagram{height:52px}#action.has-match .decision-card>span{font-size:.6rem}#action.has-match .decision-card strong{font-size:.7rem}#action.has-match .decision-card small{font-size:.62rem}.game.choosing~.toast{bottom:calc(min(50dvh,400px) + 1rem)}}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -153,7 +162,7 @@ root.Solo={DIRS,SEEDS,SHAPES,PERFECT_DECK,grid,parse,key,adjacent,rotateCell,ref
 })(globalThis);
 </script><script>'use strict';
 const $=q=>document.querySelector(q),E=Solo,KEY='nodo-solo-4.2',RK='nodo-solo-records-4.2';
-let S=null,saved=null,records={},source=null,target=null,zoom=1,timer=null,lexicon=new Map(),saveOK=true;
+let S=null,saved=null,records={},source=null,target=null,zoom=1,timer=null,lexicon=new Map(),saveOK=true,decisionDismissed=false;
 const COLORS=['#77e0bf','#f0bd70','#a78bef','#73bde8','#ed82a6','#aad77e','#f09f72','#84d4d8'];
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function notify(text){let t=$('#toast');t.textContent=text;t.hidden=false;clearTimeout(timer);timer=setTimeout(()=>t.hidden=true,3400);}
@@ -165,7 +174,7 @@ $('#resume').hidden=!saved;$('#best').textContent=records.overall!==undefined?`R
 $('#kind').onchange=()=>{let coded=$('#kind').value==='code';$('#codeLabel').hidden=!coded;$('#code').required=coded;};
 $('#setup').onsubmit=e=>{e.preventDefault();let code=$('#kind').value==='code'?$('#code').value:'CIELO-'+crypto.getRandomValues(new Uint32Array(1))[0].toString(36).toUpperCase();try{S=E.create(code);enter();}catch(err){notify(err.message);}};
 $('#resume').onclick=()=>{S=saved;enter();if(S.ended)results();};
-function enter(){source=target=null;zoom=1;$('#welcome').hidden=true;$('#game').hidden=false;$('#restart').hidden=false;render();center();}
+function enter(){source=target=null;zoom=1;decisionDismissed=false;$('#welcome').hidden=true;$('#game').hidden=false;$('#restart').hidden=false;render();center();}
 function act(fn){try{let out=fn();target=null;if(!S.active)source=null;render();if(S.ended)results();return out;}catch(err){notify(err.message);}}
 function render(){
  let free=E.freeNodes(S),cover=E.coverage(S),matches=E.compatibleSlots(S);
@@ -226,15 +235,18 @@ $('#wordForm').onsubmit=async e=>{
  $('#wordHint').innerHTML='Parola non trovata. Puoi correggerla oppure confermarla manualmente.';
  $('#addWord').textContent='Usa comunque';$('#addWord').onclick=ev=>{ev.preventDefault();commitWord(raw,normalizedWord(raw),'MANUALE');};
 };
-function commitWord(word,lemma,pos){let result=act(()=>E.addWord(S,source,target,word,lemma,pos));if(result===undefined)return;$('#wordDialog').close();target=null;let last=S.active?.order.at(-1);source=last||null;render();if(result.length)notify('Configurazione completata: puoi chiuderla o continuare.');}
+function commitWord(word,lemma,pos){let result=act(()=>E.addWord(S,source,target,word,lemma,pos));if(result===undefined)return;decisionDismissed=false;$('#wordDialog').close();target=null;let last=S.active?.order.at(-1);source=last||null;render();if(result.length)notify('Configurazione completata: puoi chiuderla o continuare.');}
 function panel(matches){
  let a=$('#action');
+ a.classList.toggle('has-match',!!matches.length&&!decisionDismissed);$('#game').classList.toggle('choosing',!!matches.length&&!decisionDismissed);
  if(S.ended){let r=E.rating(S);a.innerHTML=`<div class="eyebrow">Partita conclusa</div><h2>${r.name}</h2><div class="stars">${r.stars}</div><p>Punteggio finale: <strong>${E.finalScore(S)}</strong></p><button id="showResult" class="primary">Vedi risultato</button>`;$('#showResult').onclick=results;return;}
  if(S.active){let count=E.activeNodes(S),max=Math.max(...S.hand.map(c=>E.shapeOf(c).size));a.innerHTML=`<div class="eyebrow">Costellazione attiva · ${count} nodi</div><h2>${source?esc(S.active.nodes[source]?.word||'Scegli una parola'):'Scegli una parola'}</h2><p>Tocca una parola della rete e poi un nodo libero adiacente.</p>${source?`<div class="source-box">Partenza: <strong>${esc(S.active.nodes[source].word)}</strong><br><small>${E.activeTargets(S,source).length} nodi raggiungibili</small></div>`:''}${count>max?'<p>La rete supera tutte le carte visibili: puoi continuare a esplorare o abortire.</p>':''}`;
-  if(matches.length){a.innerHTML+=`<div class="match-box"><strong>Configurazione completata</strong><p>Scegli se chiuderla adesso oppure continuare a svilupparla.</p>${matches.map(i=>`<button class="primary" data-close="${i}">Chiudi “${esc(E.shapeOf(S.hand[i]).name)}” · +${E.shapeOf(S.hand[i]).points}</button>`).join('')}<button id="continue">Continua a svilupparla</button></div>`;}
+  if(matches.length&&!decisionDismissed){a.innerHTML+=`<div class="match-box"><strong>Configurazione completata</strong><p>Confronta le tre carte prima di scegliere.</p><div class="decision-cards">${S.hand.map((card,i)=>{let sh=E.shapeOf(card),ready=matches.includes(i);return `<div class="decision-card ${ready?'ready':''}"><span>${ready?'✓ Completata':'Ancora da costruire'}</span>${diagram(sh)}<strong>${esc(sh.name)}</strong><small>${sh.size} nodi · ${sh.points} punti</small></div>`;}).join('')}</div>${matches.map(i=>`<button class="primary" data-close="${i}">Chiudi “${esc(E.shapeOf(S.hand[i]).name)}” · +${E.shapeOf(S.hand[i]).points}</button>`).join('')}<button id="continue">Continua a svilupparla</button></div>`;}
+  else if(matches.length){a.innerHTML+='<button id="reviewCards">Rivedi le tre carte e chiudi</button>';}
   a.innerHTML+='<button id="abort" class="danger">Abbandona costellazione</button>';
   a.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>{let pts=act(()=>E.closeConstellation(S,+b.dataset.close));if(pts!==undefined)notify(`Costellazione chiusa: +${pts} punti`);});
-  $('#continue')?.addEventListener('click',()=>notify('Continua scegliendo una parola della rete.'));
+  $('#continue')?.addEventListener('click',()=>{decisionDismissed=true;render();notify('Continua scegliendo una parola della rete.');});
+  $('#reviewCards')?.addEventListener('click',()=>{decisionDismissed=false;render();});
   $('#abort').onclick=()=>{modal('<h2>Abbandonare la costellazione?</h2><p>I suoi nodi resteranno spenti e verranno sottratti dal punteggio finale.</p><div class="dialog-actions"><button id="noAbort">Continua</button><button id="yesAbort" class="danger">Abbandona</button></div>');$('#noAbort').onclick=closeModal;$('#yesAbort').onclick=()=>{closeModal();let n=act(()=>E.abort(S));if(n!==undefined)notify(`${n} nodi spenti.`);};};return;
  }
  let can=E.anyFits(S);a.innerHTML=`<div class="eyebrow">Nuova costellazione</div><h2>Tocca un nodo libero</h2><p>Il gioco assegnerà la parola iniziale. Poi costruisci liberamente cercando di ottenere una delle tre carte.</p>${!can?'<p class="match-box">Nessuna carta visibile sembra entrare nello spazio rimasto. Usa un cambio o termina.</p>':''}<button id="finish">Termina e calcola</button>`;
