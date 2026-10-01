@@ -52,6 +52,11 @@
 .decision-card .diagram{height:58px}
 .decision-card strong{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem;color:var(--ink)}
 .decision-card small{font-size:.68rem;color:var(--muted)}
+.word-timer{margin:.5rem 0 .1rem;color:var(--gold);font-weight:700;font-variant-numeric:tabular-nums}
+.word-timer-track{height:5px;margin-top:.4rem;border-radius:6px;background:#304157;overflow:hidden}
+.word-timer-track span{display:block;width:100%;height:100%;background:var(--gold);transition:width .25s linear}
+.word-dialog.time-low .word-timer{color:#ff9b8e}
+.word-dialog.time-low .word-timer-track span{background:#ff9b8e}
 @media(max-width:600px){.game.choosing{padding-bottom:calc(min(50dvh,400px) + env(safe-area-inset-bottom) + 1rem)}#action.has-match{max-height:min(50dvh,400px)}#action.has-match .decision-cards{gap:.25rem}#action.has-match .decision-card .diagram{height:52px}#action.has-match .decision-card>span{font-size:.6rem}#action.has-match .decision-card strong{font-size:.7rem}#action.has-match .decision-card small{font-size:.62rem}.game.choosing~.toast{bottom:calc(min(50dvh,400px) + 1rem)}}
 [hidden]{display:none!important}
 </style>
@@ -107,6 +112,7 @@
   <form id="wordForm" method="dialog">
     <div class="eyebrow">Nuova associazione</div>
     <h2 id="wordTitle"></h2>
+    <div class="word-timer" role="timer" aria-label="Tempo per inserire la parola"><span id="timeRemaining">60</span> secondi <div class="word-timer-track"><span id="timeBar"></span></div></div>
     <p id="wordHint">Inserisci una singola parola italiana.</p>
     <label>Parola<input id="word" maxlength="32" autocomplete="off" autocapitalize="none" spellcheck="true" required></label>
     <div class="dialog-actions"><button id="cancelWord" type="button">Annulla</button><button id="addWord" class="primary">Aggiungi</button></div>
@@ -150,6 +156,7 @@ function activeSignature(s){if(!s.active)return '';let ids=Object.keys(s.active.
 function compatibleSlots(s){if(!s.active)return [];let sig=activeSignature(s);return s.hand.map((card,i)=>cardSignature(card)===sig?i:-1).filter(i=>i>=0);}
 function closeConstellation(s,slot){if(!s.active)throw Error('Non c’è una costellazione attiva.');if(!compatibleSlots(s).includes(slot))throw Error('La rete non corrisponde esattamente a questa carta.');let card=s.hand[slot],shape=shapeOf(card),index=s.constellations.length,a=s.active;s.constellations.push({uid:card.uid,shapeId:card.shapeId,cells:Object.keys(a.nodes),nodes:a.nodes,points:shape.points,color:index});s.cardPoints+=shape.points;s.log.push(`✦ ${shape.name} chiusa: +${shape.points} punti.`);s.active=null;s.hand.splice(slot,1);if(s.deck.length)s.hand.push(s.deck.shift());evaluateEnd(s);return shape.points;}
 function abort(s){if(!s.active)throw Error('Non c’è una costellazione da abbandonare.');let a=s.active,cells=Object.keys(a.nodes);s.aborted.push({cells,nodes:a.nodes});s.active=null;s.log.push(`◌ Costellazione abortita: −${cells.length} nodi.`);evaluateEnd(s);return cells.length;}
+function abortNode(s,id){if(!s.active||!isFree(s,id))throw Error('Il nodo non è più disponibile.');s.aborted.push({cells:[id],nodes:{[id]:{id,word:'',lemma:'',parent:null}}});s.log.push('◌ Tempo scaduto: un nodo spento (−1).');return id;}
 function transformedCells(shape,rotation,reflected,anchor){let [aq,ar]=parse(anchor);return shape.cells.map(c=>{let [q,r]=transformCell(c,rotation,reflected);return key(q+aq,r+ar);});}
 function placements(s,card){let shape=shapeOf(card),blocked=occupiedSet(s,false),seen=new Set(),out=[];for(let f of [false,true])for(let r=0;r<6;r++)for(let anchor of s.cells){let cells=transformedCells(shape,r,f,anchor),sig=cells.slice().sort().join(';');if(!seen.has(sig)&&cells.every(id=>s.cells.includes(id)&&!blocked.has(id))){seen.add(sig);out.push({rotation:r,reflected:f,anchor,cells});}}return out;}
 function cardFits(s,card){return !s.active&&placements(s,card).length>0;}function anyFits(s){return !s.active&&s.hand.some(c=>cardFits(s,c));}
@@ -158,11 +165,11 @@ function completedNodes(s){return s.constellations.reduce((n,c)=>n+c.cells.lengt
 function rating(s){let p=coverage(s);if(p===100)return {stars:'★★★★★+',name:'Cielo perfetto'};if(p>=90)return {stars:'★★★★★',name:'Maestro delle costellazioni'};if(p>=75)return {stars:'★★★★',name:'Astronomo'};if(p>=60)return {stars:'★★★',name:'Cartografo celeste'};if(p>=40)return {stars:'★★',name:'Esploratore'};return {stars:'★',name:'Scintilla'};}
 function finalScore(s){return s.cardPoints-freeNodes(s)-abortedNodes(s);}function evaluateEnd(s){if(!s.active&&!s.hand.length&&!s.deck.length){s.ended=true;s.log.push('Il mazzo è esaurito.');}else if(!s.active&&freeNodes(s)===0){s.ended=true;s.log.push('✦ Cielo perfetto: nessun nodo libero.');}}
 function finish(s){if(s.active)throw Error('Prima chiudi o abbandona la costellazione attiva.');s.ended=true;s.log.push(`Partita conclusa: ${s.cardPoints} − ${freeNodes(s)} nodi liberi − ${abortedNodes(s)} nodi abortiti = ${finalScore(s)}.`);}
-root.Solo={DIRS,SEEDS,SHAPES,PERFECT_DECK,grid,parse,key,adjacent,rotateCell,reflectCell,transformCell,shapeEdges,shapeOf,create,occupiedSet,isFree,begin,activeTargets,usedLemmas,addWord,canonicalSignature,cardSignature,activeSignature,compatibleSlots,closeConstellation,abort,transformedCells,placements,cardFits,anyFits,exchange,completedNodes,abortedNodes,activeNodes,freeNodes,coverage,rating,finalScore,finish};
+root.Solo={DIRS,SEEDS,SHAPES,PERFECT_DECK,grid,parse,key,adjacent,rotateCell,reflectCell,transformCell,shapeEdges,shapeOf,create,occupiedSet,isFree,begin,activeTargets,usedLemmas,addWord,canonicalSignature,cardSignature,activeSignature,compatibleSlots,closeConstellation,abort,abortNode,transformedCells,placements,cardFits,anyFits,exchange,completedNodes,abortedNodes,activeNodes,freeNodes,coverage,rating,finalScore,finish};
 })(globalThis);
 </script><script>'use strict';
 const $=q=>document.querySelector(q),E=Solo,KEY='nodo-solo-4.2',RK='nodo-solo-records-4.2';
-let S=null,saved=null,records={},source=null,target=null,zoom=1,timer=null,lexicon=new Map(),saveOK=true,decisionDismissed=false;
+let S=null,saved=null,records={},source=null,target=null,zoom=1,timer=null,wordTimer=null,lexicon=new Map(),saveOK=true,decisionDismissed=false;
 const COLORS=['#77e0bf','#f0bd70','#a78bef','#73bde8','#ed82a6','#aad77e','#f09f72','#84d4d8'];
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function notify(text){let t=$('#toast');t.textContent=text;t.hidden=false;clearTimeout(timer);timer=setTimeout(()=>t.hidden=true,3400);}
@@ -174,7 +181,7 @@ $('#resume').hidden=!saved;$('#best').textContent=records.overall!==undefined?`R
 $('#kind').onchange=()=>{let coded=$('#kind').value==='code';$('#codeLabel').hidden=!coded;$('#code').required=coded;};
 $('#setup').onsubmit=e=>{e.preventDefault();let code=$('#kind').value==='code'?$('#code').value:'CIELO-'+crypto.getRandomValues(new Uint32Array(1))[0].toString(36).toUpperCase();try{S=E.create(code);enter();}catch(err){notify(err.message);}};
 $('#resume').onclick=()=>{S=saved;enter();if(S.ended)results();};
-function enter(){source=target=null;zoom=1;decisionDismissed=false;$('#welcome').hidden=true;$('#game').hidden=false;$('#restart').hidden=false;render();center();}
+function enter(){source=target=null;zoom=1;decisionDismissed=false;$('#welcome').hidden=true;$('#game').hidden=false;$('#restart').hidden=false;render();center();if(S.pendingWord&&S.active){source=S.pendingWord.source;target=S.pendingWord.target;if(Date.now()>=S.pendingWord.deadline)expireWord();else openWordDialog();}}
 function act(fn){try{let out=fn();target=null;if(!S.active)source=null;render();if(S.ended)results();return out;}catch(err){notify(err.message);}}
 function render(){
  let free=E.freeNodes(S),cover=E.coverage(S),matches=E.compatibleSlots(S);
@@ -222,20 +229,26 @@ $('#plus').onclick=()=>{zoom=Math.min(2.2,zoom+.2);board();center();};$('#minus'
 function normalizedWord(word){return word.normalize('NFC').toLocaleLowerCase('it').trim();}
 function bucket(word){let plain=normalizedWord(word).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');return (plain.slice(0,2)+'__').slice(0,2);}
 async function lookupWord(word){let b=bucket(word);if(!lexicon.has(b)){if(window.NODO_LEXICON){lexicon.set(b,window.NODO_LEXICON[b]||{});}else{try{let response=await fetch(`lexicon/${b}.json`);if(!response.ok)throw Error();lexicon.set(b,await response.json());}catch(e){lexicon.set(b,{});}}}return lexicon.get(b)[normalizedWord(word)]||[];}
+function clearWordTimer(){if(wordTimer){clearInterval(wordTimer);wordTimer=null;}}
+function tickWordTimer(){let p=S?.pendingWord;if(!p)return clearWordTimer();let left=Math.max(0,p.deadline-Date.now());$('#timeRemaining').textContent=String(Math.ceil(left/1000));$('#timeBar').style.width=(left/60000*100)+'%';$('#wordDialog').classList.toggle('time-low',left<=10000);if(left<=0)expireWord();}
+function expireWord(){let p=S?.pendingWord;if(!p)return;clearWordTimer();S.pendingWord=null;if($('#wordDialog').open)$('#wordDialog').close();target=null;let id=act(()=>E.abortNode(S,p.target));if(id!==undefined)notify('Tempo scaduto: il nodo è spento (−1).');}
 function openWordDialog(){
- let d=$('#wordDialog'),from=S.active.nodes[source].word;$('#wordTitle').textContent=`Collega una parola a: ${from}`;$('#wordHint').textContent='Inserisci una singola parola italiana.';$('#word').value='';$('#addWord').textContent='Aggiungi';$('#addWord').onclick=null;if(!d.open)d.showModal();zoom=Math.max(zoom,1.25);board();centerOn(target);setTimeout(()=>$('#word').focus(),80);
+ if(!S.pendingWord){S.pendingWord={source,target,deadline:Date.now()+60000};persist();}let d=$('#wordDialog'),from=S.active.nodes[source].word;$('#wordTitle').textContent=`Collega una parola a: ${from}`;$('#wordHint').textContent='Inserisci una singola parola italiana.';$('#word').value='';$('#addWord').textContent='Aggiungi';$('#addWord').onclick=null;if(!d.open)d.showModal();zoom=Math.max(zoom,1.25);board();centerOn(target);clearWordTimer();tickWordTimer();if(S.pendingWord)wordTimer=setInterval(tickWordTimer,250);setTimeout(()=>{if(d.open)$('#word').focus();},80);
 }
-$('#cancelWord').onclick=()=>{$('#wordDialog').close();target=null;board();};
+function cancelWord(){clearWordTimer();S.pendingWord=null;persist();$('#wordDialog').close();target=null;board();}
+$('#cancelWord').onclick=cancelWord;
+$('#wordDialog').addEventListener('cancel',e=>{e.preventDefault();cancelWord();});
 $('#wordForm').onsubmit=async e=>{
  e.preventDefault();let raw=$('#word').value.trim();
+ if(!S.pendingWord||Date.now()>=S.pendingWord.deadline){expireWord();return;}
  if(!/^\p{L}+$/u.test(raw)){notify('Inserisci una sola parola, senza articolo, spazi o segni.');return;}
  $('#addWord').disabled=true;$('#wordHint').textContent='Controllo nel dizionario…';
- let candidates=await lookupWord(raw);$('#addWord').disabled=false;
+ let candidates=await lookupWord(raw);if(!S.pendingWord||Date.now()>=S.pendingWord.deadline){expireWord();return;}$('#addWord').disabled=false;
  if(candidates.length){commitWord(raw,candidates[0][0],candidates[0][1]);return;}
  $('#wordHint').innerHTML='Parola non trovata. Puoi correggerla oppure confermarla manualmente.';
  $('#addWord').textContent='Usa comunque';$('#addWord').onclick=ev=>{ev.preventDefault();commitWord(raw,normalizedWord(raw),'MANUALE');};
 };
-function commitWord(word,lemma,pos){let result=act(()=>E.addWord(S,source,target,word,lemma,pos));if(result===undefined)return;decisionDismissed=false;$('#wordDialog').close();target=null;let last=S.active?.order.at(-1);source=last||null;render();if(result.length)notify('Configurazione completata: puoi chiuderla o continuare.');}
+function commitWord(word,lemma,pos){if(!S.pendingWord||Date.now()>=S.pendingWord.deadline){expireWord();return;}let result;try{result=E.addWord(S,source,target,word,lemma,pos);}catch(err){notify(err.message);return;}clearWordTimer();S.pendingWord=null;decisionDismissed=false;$('#wordDialog').close();target=null;let last=S.active?.order.at(-1);source=last||null;render();if(result.length)notify('Configurazione completata: puoi chiuderla o continuare.');}
 function panel(matches){
  let a=$('#action');
  a.classList.toggle('has-match',!!matches.length&&!decisionDismissed);$('#game').classList.toggle('choosing',!!matches.length&&!decisionDismissed);
@@ -259,7 +272,7 @@ function report(){let data={title:'NODO v4 Solitario',version:S.version,code:S.c
 $('#export').onclick=report;
 $('#restart').onclick=()=>modal('<h2>Nuova sfida?</h2><p>La partita corrente verrà sostituita.</p><div class="dialog-actions"><button id="stay">Resta</button><button id="newGame" class="primary">Nuova</button></div>');
 document.addEventListener('click',e=>{if(e.target.id==='stay')closeModal();if(e.target.id==='newGame'){closeModal();$('#game').hidden=true;$('#welcome').hidden=false;$('#restart').hidden=true;}});
-$('#rules').onclick=()=>{modal(`<div class="eyebrow">Come si gioca</div><h2>Costruisci, riconosci, incastra</h2><div class="rule"><strong>1. Inizia liberamente.</strong> Tocca qualsiasi nodo libero: riceverai una parola casuale.</div><div class="rule"><strong>2. Crea associazioni.</strong> Tocca una parola attiva, poi un nodo adiacente e inserisci una sola parola collegata.</div><div class="rule"><strong>3. Riconosci la forma.</strong> La rete deve coincidere con nodi e collegamenti di una carta. Rotazioni e riflessioni sono valide.</div><div class="rule"><strong>4. Scegli.</strong> Quando completi una carta puoi chiuderla o continuare verso una configurazione più grande.</div><div class="rule"><strong>5. Incastra.</strong> Le costellazioni chiuse possono essere adiacenti, ma non collegate. Tre cambi rimettono la carta in fondo al mazzo.</div><div class="rule"><strong>Punteggio.</strong> Punti delle carte − nodi liberi − nodi abortiti. Solo i nodi chiusi contano nella percentuale.</div><p>Le parole riconosciute sono ricondotte al lemma: lo stesso lemma non può essere ripetuto. Una parola sconosciuta può essere confermata manualmente.</p><button id="closeRules" class="primary">Torna al cielo</button>`);$('#closeRules').onclick=closeModal;};
+$('#rules').onclick=()=>{modal(`<div class="eyebrow">Come si gioca</div><h2>Costruisci, riconosci, incastra</h2><div class="rule"><strong>1. Inizia liberamente.</strong> Tocca qualsiasi nodo libero: riceverai una parola casuale.</div><div class="rule"><strong>2. Crea associazioni.</strong> Tocca una parola attiva, poi un nodo adiacente e inserisci una sola parola collegata. Hai 60 secondi: se scadono, quel nodo si spegne (−1), ma la costellazione resta attiva.</div><div class="rule"><strong>3. Riconosci la forma.</strong> La rete deve coincidere con nodi e collegamenti di una carta. Rotazioni e riflessioni sono valide.</div><div class="rule"><strong>4. Scegli.</strong> Quando completi una carta puoi chiuderla o continuare verso una configurazione più grande.</div><div class="rule"><strong>5. Incastra.</strong> Le costellazioni chiuse possono essere adiacenti, ma non collegate. Tre cambi rimettono la carta in fondo al mazzo.</div><div class="rule"><strong>Punteggio.</strong> Punti delle carte − nodi liberi − nodi abortiti. Solo i nodi chiusi contano nella percentuale.</div><p>Le parole riconosciute sono ricondotte al lemma: lo stesso lemma non può essere ripetuto. Una parola sconosciuta può essere confermata manualmente.</p><button id="closeRules" class="primary">Torna al cielo</button>`);$('#closeRules').onclick=closeModal;};
 $('#atlas').onclick=()=>{modal(`<div class="eyebrow">Forme possibili</div><h2>Atlante</h2><p>Le carte mostrano esattamente nodi e collegamenti; orientamento e riflessione sono liberi.</p><div class="atlas-grid">${E.SHAPES.map(s=>`<article class="card"><div class="card-top"><span>${s.size} NODI</span><span>${s.points} PT</span></div>${diagram(s)}<h3>${esc(s.name)}</h3></article>`).join('')}</div><button id="closeAtlas">Chiudi</button>`);$('#closeAtlas').onclick=closeModal;};
 </script>
 </body></html>
